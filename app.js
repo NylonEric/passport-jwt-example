@@ -1,9 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const passport = require('passport');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
-const UserModel = require('./model/model');
+const path = require('path');
 
 // mongoose.connect('mongodb://127.0.0.1:27017/passport-jwt', { useMongoClient: true });
 mongoose.connect("mongodb://127.0.0.1:27017/passport-jwt", {
@@ -14,14 +13,47 @@ mongoose.connect("mongodb://127.0.0.1:27017/passport-jwt", {
 mongoose.connection.on('error', error => console.log(error) );
 mongoose.Promise = global.Promise;
 
-require('./auth/auth');
+const { passport } = require('./auth/auth');
 
 const routes = require('./routes/routes');
 const secureRoutes = require('./routes/secure-routes');
 
 const app = express();
 
+// socket.io initialization
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: {
+    origin: `http://127.0.0.1:${PORT}`,
+    methods: ['*'],
+    allowedHeaders: ['Authorization'],
+    credentials: true,
+  }
+})
+
+const sendTime = () => {
+  io.emit('time', { time: new Date().toJSON() });
+  // console.debug('time emitted:');
+}
+
+setInterval(sendTime, 5000);
+
+io.on('connection', (socket) => {
+  // Use socket to communicate with this particular client only, sending it it's own id
+  console.debug('socket connection initiated. socket.id: ', socket.id);
+  socket.emit('welcome', { message: 'Welcome!', id: socket.id });
+
+  socket.on('i-am-client', (data) => {
+    console.log('client message: ', data);
+  });
+});
+
+// middleware for http app requests:
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "dist")));
+
 app.use('/', (req, res, next) => {
   // console.debug('query:', req.query);
   next();
@@ -38,6 +70,6 @@ app.use(function(err, req, res, next) {
   res.json({ error: err });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`)
-});
+module.exports = {
+  server,
+}
