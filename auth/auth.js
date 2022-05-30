@@ -60,6 +60,7 @@ passport.use(
       jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
     },
     async (token, done) => {
+      // console.debug('here\'s the token in the auth:', token);
       try {
         return done(null, token.user);
       } catch (error) {
