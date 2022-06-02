@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/NylonEric/passport-jwt-example#readme",
   "dependencies": {
-    "bcrypt": "^4.0.1",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
