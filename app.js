@@ -48,7 +48,7 @@ const sendTime = () => {
   // console.debug('time emitted:');
 }
 
-setInterval(sendTime, 5000);
+setInterval(sendTime, 1000);
 
 // socket.io middleware:
 const wrap_socket_middleware = (middleware) => (socket, next) => {
