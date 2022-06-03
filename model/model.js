@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
+const { mongoose } = require('../mongo/db');
 const bcrypt = require('bcrypt');
-
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -29,9 +28,8 @@ UserSchema.pre(
 UserSchema.methods.isValidPassword = async function(password) {
   const user = this;
   const compare = await bcrypt.compare(password, user.password);
-
   return compare;
-}
+};
 
 const UserModel = mongoose.model('user', UserSchema);
 

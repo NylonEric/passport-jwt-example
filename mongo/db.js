@@ -6,7 +6,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/passport-jwt", {
   useUnifiedTopology: true,
 });
 // mongoose.set("useCreateIndex", true);
-mongoose.connection.on('error', error => console.log(error) );
+mongoose.connection.on('error', error => console.error(error) );
 mongoose.Promise = global.Promise;
 
 module.exports = {

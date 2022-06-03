@@ -1,8 +1,5 @@
-
-
 const routes = (passport) => {
   const express = require('express');
-  // const passport = require('passport');
   const jwt = require('jsonwebtoken');
   const router = express.Router();
 
@@ -10,6 +7,7 @@ const routes = (passport) => {
     '/signup',
     passport.authenticate('signup', { session: false }),
     async (req, res, next) => {
+      console.debug('success signup!', req.user);
       res.json({
         message: 'Signup successful',
         user: req.user
@@ -26,19 +24,16 @@ const routes = (passport) => {
           try {
             if (err || !user) {
               const error = new Error('An error occurred.');
-
               return next(error);
             }
-
             req.login(
               user,
               { session: false },
               async (error) => {
                 if (error) return next(error);
-
                 const body = { _id: user._id, email: user.email };
                 const token = jwt.sign({ user: body }, 'TOP_SECRET');
-
+                console.debug('success!', token);
                 return res.json({ token });
               }
             );
@@ -53,5 +48,5 @@ const routes = (passport) => {
 };
 
 module.exports = (passport) => {
-  return routes(passport);
+  return routes(passport)
 };

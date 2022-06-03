@@ -2,13 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const path = require('path');
-const mongoose = require('mongoose');
+// const { mongoose } = require('./mongo/db');
 
 const { passport } = require('./auth/auth');
-
-const routes = require('./routes/routes')(passport);
+const routes = require('./routes/routes.js')(passport);
 const secureRoutes = require('./routes/secure-routes');
-
 const app = express();
 
 // middleware for http app requests:
@@ -53,7 +51,7 @@ const sendTime = () => {
 setInterval(sendTime, 5000);
 
 // socket.io middleware:
-const wrap_socket_middleware = (middleware) => (socket, next, options) => {
+const wrap_socket_middleware = (middleware) => (socket, next) => {
   return middleware(socket.request, {}, next); // ! pay special attention to how this wrapper adds the 3 arguments expected of http middleware and maps to the 2 for sockets
 }
 
