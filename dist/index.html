@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
+      let socket = io({
+        extraHeaders: {
+          Authorization: 'Bearer ' +  localStorage.getItem('token'),
+        }
+      });
+
+      socket.on('welcome', (data) => {
+          addMessage(data.message);
+
+          // Respond with a message including this clients' id sent from the server
+          socket.emit('i-am-client', {data: 'foo!', id: data.id});
+      });
+      socket.on('time', (data) => {
+          // console.log('here is time event:', data);
+          addMessage(data.time);
+      });
+      socket.on('error', console.error.bind(console));
+      socket.on('message', console.log.bind(console));
+
+      const addMessage = (message) => {
+          let text = document.createTextNode(message),
+              el = document.createElement('li'),
+              messages = document.getElementById('messages');
+
+          el.appendChild(text);
+          messages.appendChild(el);
+      }
+  </script>
+  </head>
+  <body>
+    html page retrieved:
+    <title>Passport JWT example</title>
+    <form id="login" action="login" method="post">
+      <h3>Login Form</h3>
+      <input id="email" name="email" autocomplete="off" type="email">
+      <input id="password" name="password" autocomplete="off" type="password">
+      <button id="send">Send</button> 
+    </form>
+    <button id="logout" name="logout">Logout</button>
+    <!-- login functionality -->
+    <script>
+      document.forms['login'].addEventListener('submit', (event) => {
+    event.preventDefault();
+    // TODO do something here to show user that form is being submitted
+    fetch(event.target.action, {
+        method: 'POST',
+        body: new URLSearchParams(new FormData(event.target)) // event.target is the form
+    }).then((response) => {
+      console.log('submit response:', response);
+        return response.json(); // or resp.text() or whatever the server sends
+    }).then((body) => {
+      console.log('here is the body text:', body?.token);
+      // save jwt to local storage:
+      localStorage.setItem('token', body?.token);
+      // redirect('/');
+      window.location.reload();
+    }).catch((error) => {
+      console.log('error in form submit', error);
+        // TODO handle error
+    });
+});
+    </script>
+    <!-- logout functionality -->
+    <script>
+      const logOut = () => {
+        // remove token in local storage
+        localStorage.setItem('token', null);
+        // refresh page
+        window.location.reload();
+      };
+      document.getElementById("logout").onclick = (e) => {
+        e.preventDefault();
+        logOut();
+        console.log('clicked logout');
+      }; 
+    </script>
+    <ul id='messages'></ul>
+  </body>
+</html>

@@ -34,7 +34,7 @@ passport.use(
       // console.debug('in the login strategy', email, password);
       try {
         const user = await UserModel.findOne({ email });
-        // console.debug('login strategy, user found:', user);
+        console.debug('login strategy, user found:', user);
         if (!user) {
           return done(null, false, { message: 'User not found' });
         }
