@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <script src="./js/jwt-decode.js"></script>
+  </head>
+  <body>
+    html page retrieved:
+    <div id="user-block">
+      <span id="user"></span>
+    </div>
+    <title>Passport JWT example</title>
+    <!-- login form -->
+    <form id="login" action="login" method="post">
+      <h3>Login Form</h3>
+      <input id="email-login" name="email" autocomplete="off" type="email">
+      <input id="password-login" name="password" autocomplete="off" type="password">
+      <button id="send-login">Send</button> 
+    </form>
+    <button id="logout" name="logout">Logout</button>
+    <!-- signup form -->
+    <form id="signup" action="signup" method="post">
+      <h3>Registration Form</h3>
+      <input id="email-signup" name="email" autocomplete="off" type="email">
+      <input id="password-signup" name="password" autocomplete="off" type="password">
+      <button id="send-signup">Send</button> 
+    </form>
+    
+    <!-- user display -->
+    <script src="./js/check_user.js"></script>
+   <!-- socket and messaging setup: -->
+   <script src="./js/messaging.js"></script>
+    <!-- login functionality -->
+    <script src="./js/login.js"></script>
+    <!-- logout functionality -->
+    <script src="./js/logout.js"></script>
+    <!-- signup functionality -->
+    <script src="./js/signup.js"></script>
+    <!-- messages list -->
+    <ul id='messages'></ul>
+  </body>
+</html>
