@@ -2,39 +2,13 @@
 <html>
   <head>
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
-    <script>
-      const addMessage = (message) => {
-        let text = document.createTextNode(message);
-        let el = document.createElement('li');
-        let messages = document.getElementById('messages');
-        el.appendChild(text);
-        messages.appendChild(el);
-      };
-      var socket;
-      const setSocket = (socket) => {
-        socket = io({
-          extraHeaders: {
-            Authorization: 'Bearer ' +  localStorage.getItem('token'),
-          },
-        });
-        socket.on('welcome', (data) => {
-          addMessage(data.message);
-
-          // Respond with a message including this clients' id sent from the server
-          socket.emit('i-am-client', {data: 'foo!', id: data.id});
-        });
-        socket.on('time', (data) => {
-          // console.log('here is time event:', data);
-          addMessage(data.time);
-        });
-        socket.on('error', console.error.bind(console));
-        socket.on('message', console.log.bind(console));
-      };
-      setSocket(socket);      
-    </script>
+    <script src="./js/jwt-decode.js"></script>
   </head>
   <body>
     html page retrieved:
+    <div id="user-block">
+      <span id="user"></span>
+    </div>
     <title>Passport JWT example</title>
     <!-- login form -->
     <form id="login" action="login" method="post">
@@ -51,69 +25,18 @@
       <input id="password-signup" name="password" autocomplete="off" type="password">
       <button id="send-signup">Send</button> 
     </form>
+    
+    <!-- user display -->
+    <script src="./js/check_user.js"></script>
+   <!-- socket and messaging setup: -->
+   <script src="./js/messaging.js"></script>
     <!-- login functionality -->
-    <script>
-      document.forms['login'].addEventListener('submit', (event) => {
-        event.preventDefault();
-        // TODO do something here to show user that form is being submitted
-        fetch(event.target.action, {
-          method: 'POST',
-          body: new URLSearchParams(new FormData(event.target)) // event.target is the form
-        }).then((response) => {
-        console.log('submit response:');
-        return response.json();
-        }).then((body) => {
-          console.log('here is the body text:', body);
-          // save jwt to local storage:
-          if (body?.token) {
-            localStorage.setItem('token', body?.token);
-            addMessage('login successful:', body?.token);
-            setSocket(socket);
-          } else {
-            addMessage('login fail');
-          }
-        }).catch((error) => {
-          console.log('error in form submit', error);
-        });
-      });
-    </script>
-
+    <script src="./js/login.js"></script>
     <!-- logout functionality -->
-    <script>
-      const logOut = () => {
-        // remove token in local storage
-        localStorage.setItem('token', null);
-        // refresh page
-        window.location.reload();
-      };
-      document.getElementById("logout").onclick = (e) => {
-        e.preventDefault();
-        logOut();
-        console.log('clicked logout');
-      }; 
-    </script>
-
+    <script src="./js/logout.js"></script>
     <!-- signup functionality -->
-    <script>
-      document.forms['signup'].addEventListener('submit', (event) => {
-    event.preventDefault();
-    // TODO do something here to show user that form is being submitted
-    fetch(event.target.action, {
-        method: 'POST',
-        body: new URLSearchParams(new FormData(event.target)) // event.target is the form
-    }).then((response) => {
-      console.debug('submit response:', response);
-        return response.json();
-    }).then((body) => {
-      console.log('signup successful:', body);
-      addMessage('Signup success!');
-      setTimeout(() => {
-        window.location.reload()}, 1000);
-    }).catch((error) => {
-      console.error('error in form submit', error);
-    });
-});
-    </script>
+    <script src="./js/signup.js"></script>
+    <!-- messages list -->
     <ul id='messages'></ul>
   </body>
 </html>

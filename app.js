@@ -56,8 +56,8 @@ const wrap_socket_middleware = (middleware) => (socket, next) => {
 }
 
 io.use((socket, next) => {
-  console.debug('socket middleware on connection!', Object.keys(socket.handshake));
-  console.debug('user before auth:', socket.request.user);
+  // console.debug('socket middleware on connection!', Object.keys(socket.handshake));
+  // console.debug('user before auth:', socket.request.user);
   next();
 });
 
@@ -65,9 +65,9 @@ io.use((socket, next) => {
 io.use(wrap_socket_middleware(passport.authenticate('jwt', { session: false })));
 
 io.use((socket, next) => {
-  console.debug('socket middleware after auth middleware! lets see if there\'s a user:');
+  // console.debug('socket middleware after auth middleware! lets see if there\'s a user:');
   if (socket.request.user) {
-    console.debug('user after auth:', socket.request.user);
+    // console.debug('user after auth:', socket.request.user);
     next();
   } else {
     console.debug('no user after auth');
@@ -77,7 +77,7 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   // Use socket to communicate with this particular client only, sending it it's own id
-  console.debug('socket connection initiated. socket.id: ', socket.id);
+  console.log('socket connection initiated. socket.id: ', socket.id);
   socket.emit('welcome', { message: 'Welcome!', id: socket.id });
 
   socket.on('i-am-client', (data) => {
